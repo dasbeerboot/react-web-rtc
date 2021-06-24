@@ -1,70 +1,41 @@
-# Getting Started with Create React App
+# React WebRTC with TypeScript example by Juwon Chun
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+## How to start?
 
-In the project directory, you can run:
+1. Clone this repo
+2. On your terminal, execute `yarn`
+3. Then as always, go `yarn start`
+4. Add new tab on your terminal, and repeat 2nd, 3rds step to open this app on different port
 
-### `yarn start`
+✔ Note that WebRTC only works with https and local environment
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<br/><br/><br/>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### WebRTC =>
 
-### `yarn test`
+third-party 서버나 native앱 없이 유저들끼리 브라우저상에서 P2P connection을 이용해 다이렉트로 비디오, 오디오, 챗 등을 주고받을 수 있게 해주는 API.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### How does it work?
 
-### `yarn build`
+player 1이 다른 유저에게 player1로 connect 할 수 있는 오퍼를 create 한다. sdp object or sdp protocol needed. (sdp answer) , signaling. 시그널링 서버가 있어야되는데 시그널링 서버는 유저들끼리 안전하게 연결하도록 도와주지만 유저들 사이에서 전송되고 공유도ㅣ는 미디어는 건드리지 않는다. 하지만? 대부분의 유저들의 컴퓨터엔 방화벽(fire wall)이 깔려있고, ip주소는 계속해서 바뀐다. 그래서 네트워킹 관점에서 봤을때 webRTC는 어려운데, interactive connectivity 라고 불리우는 스탠다드로 (ice) 그들의 공개적인 아이피 어드레스를 고정시켜주는 스탠다드. 그거 써서 플레이어1과 2는 각자 ice candidates(ip address & port) 리스트를 만든다.
+stun서버로 리퀘스트를 보내면 (구글거 공짜임) 데이터베이스에 모든 참여자가 읽을 수 있는 ice candidates를 저장하고 stun 서버의 알고리즘이 어떤 candidate가 제일 효율적인지 계산해서 연결을 주선해준다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### How did I make this app?
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1.  firebase를 인스톨한다. firebase는 우리가 백엔드 시그널링 서버로 사용할 수 있는 firestore database를 가지고있는 패키지다. 파이어베이스는
+    데이터 베이스 업데이트를 리얼타임으로 보면서 작업하기 쉬워서 웹소켓같은거 안쓰고 파이어베이스 쓰겠다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ` yarn add firebase` 해서 인스톨 ㄱ ㄱ
 
-### `yarn eject`
+2.  파이어베이스 콘솔로 가서, start in test mode로 파이어스토어를 이니셜라이즈해라
+3.  setting 패널로 가서 </> 눌러서 웹프로젝트를 create하고 cdn으로 config을 받아야됨. 세팅할때 cdn밖에 안나온다고? 당황X  
+    일단 set up하고 나면 화면이 뜸. 거기가서 config선택해서 받으면 됨
+4.  이제 main.js로 가서 import 갈기고 firebase config을 붙여넣기하자
+5.  이제 컴포넌트들 사이에서 공유될 세개의 글로벌 variable을 선언해야됨  
+    ` let pc = new RICPeerConnection();`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 🤩 헐 주원이가 해냈다!! 🤩
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 일단 해냈으니깐 목요일을 조금 즐기고 코드 리팩토링도 하고 README는 내일 고칠예정 ^~^ MUYAHO~~~
