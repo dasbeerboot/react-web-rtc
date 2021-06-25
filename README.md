@@ -2,40 +2,34 @@
 
 ---
 
-## How to start?
+## What is Web RTC?
 
-1. Clone this repo
-2. On your terminal, execute `yarn`
-3. Then as always, go `yarn start`
-4. Add new tab on your terminal, and repeat 2nd, 3rds step to open this app on different port
+Web RTC는 브라우저 상에서 사용자들끼리 Peer to Peer(P2P) 통신을 이용해 다이렉트로 비디오, 오디오, 챗 등을 주고받을 수 있게 해주는 API이다.
 
-✔ Note that WebRTC only works with https and local environment
+![pic1](./src/assets/webrtc1.png)  
+기존 웹에서는 통신을 위해서 사용자들 사이에 중간 서버를 거치게 된다.
 
-<br/><br/><br/>
+![pic2](./src/assets/webrtc2.png)  
+WebRTC를 이용하면 중간 서버나 native 앱을 거치지 않고, P2P 통신을 이용해 미디어를 주고받을 수 있다.
+<br /><br/>
 
-### WebRTC =>
+### 중간서버를 거치지 않는다 !== 서버가 필요 없다.
 
-third-party 서버나 native앱 없이 유저들끼리 브라우저상에서 P2P connection을 이용해 다이렉트로 비디오, 오디오, 챗 등을 주고받을 수 있게 해주는 API.
+여기서 중간 서버를 거치지 않는다는 말이 곧 서버가 필요 없음을 뜻하지는 않는다.  
+Web RTC를 이용한 웹 어플리케이션 사용자의 관점에서는 브라우저 외에 아무것도 필요하지 않지만,  
+Web RTC API는 시그널링을 수행하지 않기 때문에 개발자는 이를 위해 따로 동작하는 서버 측 솔루션을 만들어야 한다.
 
-### How does it work?
+> **시그널링(Signaling)** : 미디어를 주고 받음에 있어서, Third-party 서버 없이 Peer to Peer로 통신할 수 있도록  
+> 해당 통신 세션의 설정, 제어, 및 종료를 총괄하는 프로세스.
 
-player 1이 다른 유저에게 player1로 connect 할 수 있는 오퍼를 create 한다. sdp object or sdp protocol needed. (sdp answer) , signaling. 시그널링 서버가 있어야되는데 시그널링 서버는 유저들끼리 안전하게 연결하도록 도와주지만 유저들 사이에서 전송되고 공유도ㅣ는 미디어는 건드리지 않는다. 하지만? 대부분의 유저들의 컴퓨터엔 방화벽(fire wall)이 깔려있고, ip주소는 계속해서 바뀐다. 그래서 네트워킹 관점에서 봤을때 webRTC는 어려운데, interactive connectivity 라고 불리우는 스탠다드로 (ice) 그들의 공개적인 아이피 어드레스를 고정시켜주는 스탠다드. 그거 써서 플레이어1과 2는 각자 ice candidates(ip address & port) 리스트를 만든다.
-stun서버로 리퀘스트를 보내면 (구글거 공짜임) 데이터베이스에 모든 참여자가 읽을 수 있는 ice candidates를 저장하고 stun 서버의 알고리즘이 어떤 candidate가 제일 효율적인지 계산해서 연결을 주선해준다.
+NAT환경에서 private IP를 할당받은 클라이언트가 WebRTC를 이용하고자 할 때, 사용자는 자신의 public IP를 필요로 한다.  
+이를 위해 자신의 public IP를 파악하고 상대 peer에 데이터를 전송하기 위한 peer간의 응답 프로토콜인 Ice(Interactive Connectivity Establishment) 프로토콜을 이용하며 이 프로토콜은 STUN서버를 이용해 구축할 수 있다.  
+예를 들어, 사용자1과 사용자2가 서로간의 P2P 커넥션을 위해 STUN서버로 리퀘스트를 보내면, 이 서버는 응답값으로 요청을 보낸 클라이언트의 public IP와 포트를 보내주고,  
+동시에 연결된 데이터베이스에 모든 참여자가 읽을 수 있도록 저장한다.
+이후 서버 알고리즘이 어떤 candidate와의 연결이 가장 효율적일지 계산 해 연결을 주선해준다.
 
-### How did I make this app?
+> **STUN** : 방화벽이 설치된 NAT 환경에서 Ice 프로토콜 구축을 위해 사용하는 서버.
 
-1.  firebase를 인스톨한다. firebase는 우리가 백엔드 시그널링 서버로 사용할 수 있는 firestore database를 가지고있는 패키지다. 파이어베이스는
-    데이터 베이스 업데이트를 리얼타임으로 보면서 작업하기 쉬워서 웹소켓같은거 안쓰고 파이어베이스 쓰겠다.
+<br/><br/>
 
-    ` yarn add firebase` 해서 인스톨 ㄱ ㄱ
-
-2.  파이어베이스 콘솔로 가서, start in test mode로 파이어스토어를 이니셜라이즈해라
-3.  setting 패널로 가서 </> 눌러서 웹프로젝트를 create하고 cdn으로 config을 받아야됨. 세팅할때 cdn밖에 안나온다고? 당황X  
-    일단 set up하고 나면 화면이 뜸. 거기가서 config선택해서 받으면 됨
-4.  이제 main.js로 가서 import 갈기고 firebase config을 붙여넣기하자
-5.  이제 컴포넌트들 사이에서 공유될 세개의 글로벌 variable을 선언해야됨  
-    ` let pc = new RICPeerConnection();`
-
-### 🤩 헐 주원이가 해냈다!! 🤩
-
-### 일단 해냈으니깐 목요일을 조금 즐기고 코드 리팩토링도 하고 README는 내일 고칠예정 ^~^ MUYAHO~~~
+## How does it work?

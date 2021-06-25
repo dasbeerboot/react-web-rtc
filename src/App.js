@@ -44,15 +44,6 @@ function App() {
   let remoteVideo = document.getElementById('remoteVideo');
   let hangupButton = document.getElementById('hangupButton');
 
-  const getElementsWhenRendered = () => {
-    webcamButton = document.getElementById('webcamButton');
-    webcamVideo = document.getElementById('webcamVideo');
-    callButton = document.getElementById('callButton');
-    callInput = document.getElementById('callInput');
-    answerButton = document.getElementById('answerButton');
-    remoteVideo = document.getElementById('remoteVideo');
-    hangupButton = document.getElementById('hangupButton');
-  }
   // const remoteStream = useRef(null)
 
   const [callId, setCallId] = useState('')
@@ -172,6 +163,16 @@ function App() {
         }
       })
     })
+  }
+
+  const getElementsWhenRendered = () => {
+    webcamButton = document.getElementById('webcamButton');
+    webcamVideo = document.getElementById('webcamVideo');
+    callButton = document.getElementById('callButton');
+    callInput = document.getElementById('callInput');
+    answerButton = document.getElementById('answerButton');
+    remoteVideo = document.getElementById('remoteVideo');
+    hangupButton = document.getElementById('hangupButton');
   }
 
   useEffect(() => {
