@@ -39,17 +39,16 @@ Web RTC를 이용해 영상통화를 하고 싶은 _Tom_ 과 _Kaye_ 가 있다�
 
 ### _Tom_'s side
 
-1.  ```
-       const servers = {
-               iceServers: [
-                 {
-                     urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
-                 },
-               ],
-               iceCandidatePoolSize: 10,
-             }
-        let pc = new RTCPeerConnection(servers); // pc Object가 바로 where all the actions happen!!
-
+1.  ```javascript
+    const servers = {
+      iceServers: [
+        {
+          urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
+        },
+      ],
+      iceCandidatePoolSize: 10,
+    }
+    let pc = new RTCPeerConnection(servers) // pc Object가 바로 where all the actions happen!!
     ```
 
     무료 STUN 서버로 servers를 설정해주고 , 전역변수로 pc를 선언 후 [RTCPeerConnection()](https://developer.mozilla.org/ko/docs/Web/API/RTCPeerConnection)을 할당해  
@@ -57,24 +56,23 @@ Web RTC를 이용해 영상통화를 하고 싶은 _Tom_ 과 _Kaye_ 가 있다�
 
 2.  `const localStream = navigator.mediaDevices.getUserMedia() ` // 내 미디어 소스를 set up 한다.
 3.  `const remoteStream = new MediaStream()` // *Kaye*의 영상을 받아와서 송출한 미디어 소스도 set up 한다.
-4.  ```
+4.  ```javascript
     pc.ontrack = (event) => {
       event.streams[0].getTracks().forEach((track) => {
-        remoteStream.addTrack(track);
-      });
-    };
+        remoteStream.addTrack(track)
+      })
+    }
     ```
     앞서 선언한 `remoteStream` 에 *kaye*와의 연결에서 받아 온 트랙을 추가해준다.
-5.  ```
-        const callDoc = firestore.collection('calls').doc()
-        let offerCandidates = callDoc.collection('offerCandidates')
-        let answerCandidates = callDoc.collection('answerCandidates')
-
+5.  ```javascript
+    const callDoc = firestore.collection('calls').doc()
+    let offerCandidates = callDoc.collection('offerCandidates')
+    let answerCandidates = callDoc.collection('answerCandidates')
     ```
 
     시그널링 후 생성된 offer에 대한 key값을 받아 저장하기 위해 데이터베이스가 연결된 서버(해당 demo에서는 firebase와 firestore 이용함)를 연결한다.
 
-6.  ```
+6.  ```javascript
     const offer = {
       sdp: offerDescription.sdp,
       type: offerDescription.type,
@@ -85,19 +83,18 @@ Web RTC를 이용해 영상통화를 하고 싶은 _Tom_ 과 _Kaye_ 가 있다�
 
     오퍼를 생성한다.
 
-7.  ```
-      const answerDescription = new RTCSessionDescription(data.answer)
-      pc.setRemoteDescription(answerDescription)
-      answerCandidates.onSnapshot((snapshot) => {
-
+7.  ```javascript
+    const answerDescription = new RTCSessionDescription(data.answer)
+    pc.setRemoteDescription(answerDescription)
+    answerCandidates.onSnapshot((snapshot) => {
       // candidate를 피어 커넥션에 추가하는 부분
       snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            const candidate = new RTCIceCandidate(change.doc.data())
-            pc.addIceCandidate(candidate)
-          }
-        })
+        if (change.type === 'added') {
+          const candidate = new RTCIceCandidate(change.doc.data())
+          pc.addIceCandidate(candidate)
+        }
       })
+    })
     ```
 
     *kaye*로 부터 응답을 받을 준비를 해두고, 응답을 받게되면 해당 candidate를 피어 커넥션에 추가해준다.  
@@ -107,18 +104,18 @@ Web RTC를 이용해 영상통화를 하고 싶은 _Tom_ 과 _Kaye_ 가 있다�
 
 1. `const roomId = 123123` <= 처럼, *Tom*으로부터 받은 roomId를 변수에 저장한다. (혹은 간단히 input 엘리먼트에 입력도 ok, 구현하기 나름)
 
-2. ```
-    const answerCandidates = callDoc.collection('answerCandidates')
-    pc.onicecandidate = (event) => {
-           event.candidate && answerCandidates.add(event.candidate.toJSON());
-         };
+2. ```javascript
+   const answerCandidates = callDoc.collection('answerCandidates')
+   pc.onicecandidate = (event) => {
+     event.candidate && answerCandidates.add(event.candidate.toJSON())
+   }
    ```
    *Tom*과 같이 `RTCPeerConnection()` 을 사용하여 WebRTC 연결을 준비하고, 서버의 answerCandidate 콜렉션의 자신의 Ice 정보를 저장한다.
-3. ```
+3. ```javascript
    const answer = {
-         type: answerDescription.type,
-         sdp: answerDescription.sdp,
-    }
+     type: answerDescription.type,
+     sdp: answerDescription.sdp,
+   }
    ```
    위와 같이 보낼 응답의 타입과 SDP를 정의하고, 피어 커넥션의 Ice Candidate에 자기 자신을 추가해주는것으로 연결은 끝이 난다.
 
