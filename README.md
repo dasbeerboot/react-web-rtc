@@ -1,4 +1,4 @@
-# React WebRTC with TypeScript example by Juwon Chun
+# React WebRTC with example by Juwon Chun
 
 ## What is Web RTC?
 
