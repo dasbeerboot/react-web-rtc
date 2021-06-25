@@ -126,3 +126,13 @@ Web RTC를 이용해 영상통화를 하고 싶은 _Tom_ 과 _Kaye_ 가 있다�
 
 ![pic3](./src/assets/webrtc3.png)  
 (사이좋은 우리 🥰)
+
+<br /><br/><br/>
+
+### References
+
+[WebRTC.org 공식 docs](https://webrtc.org/)  
+[MDN WebRTC API](https://developer.mozilla.org/ko/docs/Web/API/WebRTC_API)  
+[STUN/TURN](https://velog.io/@rolled-potatoes/webRTC-1-STUNTURN#webrtc-%EC%A0%88%EC%B0%A8)  
+[WebRTC 통신원리](https://velog.io/@ehdrms2034/WebRTC-%EC%9B%B9%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EB%A1%9C-%ED%99%94%EC%83%81-%EC%B1%84%ED%8C%85%EC%9D%84-%EB%A7%8C%EB%93%A4-%EC%88%98-%EC%9E%88%EB%8B%A4%EA%B3%A0)  
+[Youtube Demo](https://www.youtube.com/watch?v=WmR9IMUD_CY)
